@@ -1,9 +1,8 @@
 import { onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
 
-import { auth , db} from "./config.js";
-// import { db } from "./config.js";
+import { collection, addDoc , getDocs, doc, deleteDoc} from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"; 
 
-import { collection, addDoc , getDocs} from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"; 
+import { auth , db} from "./config.js";
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -49,10 +48,30 @@ function render() {
     return;
   }
   arr.map((item)=>{
-ul.innerHTML += `<li>${item.todo}<li/>`
+ul.innerHTML += `<li>${item.todo}<button class="deleteBtn">Delete</button>
+<button class="editBtn">Edit</button>
+<li/>`
   });
 }
+// delete and add todo btns
 
+
+// delete btn 
+const deleteBtn = document.querySelectorAll(".deleteBtn");
+deleteBtn.forEach((btn, index) => {
+  btn.addEventListener("click", async () => {
+    // console.log(arr[index]);
+    await deleteDoc(doc(db, "todos", arr[index].id));
+    // console.log("Data deleted");
+    arr.splice(index, 1);
+    renderTodo();
+  });
+});
+
+
+
+// const deleteBtn = document.querySelectorAll(".deleteBtn");
+const editBtn = document.querySelectorAll(".editBtn");
 
 const from = document.querySelector("#form");
 const todos = document.querySelector("#todos");
